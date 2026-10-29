@@ -21,10 +21,7 @@ function AppInner() {
     <div className="app-root">
       <Navbar />
       <ChatPage />
-      {/* ──────────────────── LESSON 4 ──────────────────── */}
-      {/* TODO: Render MovieModal here when showModal is true */}
-      {/* {showModal && <MovieModal />} */}
-      {/* ──────────────────── END ─────────────────────────── */}
+      {showModal && <MovieModal />}
     </div>
   );
 }

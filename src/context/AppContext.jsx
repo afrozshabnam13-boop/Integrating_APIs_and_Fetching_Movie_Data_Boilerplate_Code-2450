@@ -10,7 +10,7 @@ import { STAGE, AGE } from '../constants';
 // ──────────────────── STUBS: delete after adding real code ────────────────
 // (no stub needed — add the real import above when ready)
 // ──────────────────── END ─────────────────────────
-
+import { omdbSearch, omdbDetails } from '../utils/api';
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
@@ -75,11 +75,41 @@ export function AppProvider({ children }) {
   // TODO: Wire up resetModalRef so resetChat can close the modal
   // TODO: Write openMovie(movie) — set selectedMovie, open modal, fetch full details
   // ──────────────────── STUBS: delete after adding real code ────────────────
-  const searchForStrip = useCallback(async () => [], []);
+  const searchForStrip = useCallback(async (query) => {
+
+    if (!query.trim()) return [];
+
+    try { return (await omdbSearch(query)).slice(0, 12); }
+
+    catch { return []; }
+
+  }, []);
+
+  // openMovie — fetch full details then open MovieModal
+
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [showModal,     setShowModal]     = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
+
   resetModalRef.current = () => setShowModal(false);
-  const openMovie = useCallback((movie) => { setSelectedMovie(movie); setShowModal(true); }, []);
+
+  const openMovie = useCallback((movie) => {
+
+    setSelectedMovie(movie);
+
+    setShowModal(true);
+
+    if (movie?.imdbID) {
+
+      omdbDetails(movie.imdbID)
+
+        .then(full => { if (full) setSelectedMovie(full); })
+
+        .catch(() => { });
+
+    }
+
+  }, []);
   // ──────────────────── END ─────────────────────────
 
 
